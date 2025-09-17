@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restaurant Finder Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      height: 100vh;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 90%;
+      max-width: 500px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-box {
+      padding: 15px;
+      height: 400px;
+      overflow-y: auto;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 80%;
+    }
+
+    .user {
+      background: #d1e7dd;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background: #f8d7da;
+      align-self: flex-start;
+    }
+
+    form {
+      display: flex;
+      padding: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div id="chat-box" class="chat-box"></div>
+    <form id="chat-form">
+      <input type="text" id="user-input" placeholder="E.g., 'Find Italian food in New York'" required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const chatForm = document.getElementById("chat-form");
+    const userInput = document.getElementById("user-input");
+
+    // Mocked restaurant data
+    const mockRestaurants = [
+      { name: "Luigi's Italian Bistro", location: "New York", cuisine: "Italian" },
+      { name: "Dragon Palace", location: "San Francisco", cuisine: "Chinese" },
+      { name: "Taco Haven", location: "Los Angeles", cuisine: "Mexican" },
+      { name: "Sakura Sushi", location: "Seattle", cuisine: "Japanese" },
+      { name: "Bombay Bites", location: "Chicago", cuisine: "Indian" }
+    ];
+
+    chatForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const input = userInput.value.trim();
+      if (!input) return;
+      addMessage(input, "user");
+      processUserInput(input);
+      userInput.value = "";
+    });
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.classList.add("message", sender);
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function processUserInput(input) {
+      const lower = input.toLowerCase();
+      const found = mockRestaurants.filter(r =>
+        lower.includes(r.cuisine.toLowerCase()) ||
+        lower.includes(r.location.toLowerCase())
+      );
+
+      if (found.length > 0) {
+        found.forEach(r => {
+          addMessage(`🍽️ ${r.name} — ${r.cuisine} in ${r.location}`, "bot");
+        });
+      } else {
+        addMessage("❌ Sorry, I couldn't find any matches. Try a different cuisine or location!", "bot");
+      }
+    }
+  </script>
+</body>
+</html>
